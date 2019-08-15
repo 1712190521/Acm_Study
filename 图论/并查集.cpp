@@ -4,41 +4,85 @@
 #include<cmath>
 #include<algorithm>
 using namespace std;
-int pre[1010]; //ÀïÃæÈ«ÊÇÕÆÃÅ
+int pre[1010]; //é‡Œé¢å…¨æ˜¯æŒé—¨
 int unionsearch(int root)
 {
 	int son, tmp;
 	son = root;
-	while (root != pre[root]) //Ñ°ÕÒÕÆÃÅing¡­¡­
+	while (root != pre[root]) //å¯»æ‰¾æŒé—¨ingâ€¦â€¦
 		root = pre[root];
-	while (son != root) //Â·¾¶Ñ¹Ëõ
+	while (son != root) //è·¯å¾„å‹ç¼©
 	{
 		tmp = pre[son];
 		pre[son] = root;
 		son = tmp;
 	}
-	return root; //ÕÆÃÅ¼İµ½~
+	return root; //æŒé—¨é©¾åˆ°~
 }
 int main()
 {
 	int num, road, total, i, start, end, root1, root2;
 	while (scanf("%d%d", &num, &road) && num)
 	{
-		total = num - 1; //¹²num-1¸öÃÅÅÉ
-		for (i = 1; i <= num; ++i) //Ã¿ÌõÂ·¶¼ÊÇÕÆÃÅ
+		total = num - 1; //å…±num-1ä¸ªé—¨æ´¾
+		for (i = 1; i <= num; ++i) //æ¯æ¡è·¯éƒ½æ˜¯æŒé—¨
 			pre[i] = i;
 		while (road--)
 		{
-			scanf("%d%d", &start, &end); //ËûÁ©Òª½á°İ
+			scanf("%d%d", &start, &end); //ä»–ä¿©è¦ç»“æ‹œ
 			root1 = unionsearch(start);
 			root2 = unionsearch(end);
-			if (root1 != root2) //ÕÆÃÅ²»Í¬£¿Ìß¹İ£¡~
+			if (root1 != root2) //æŒé—¨ä¸åŒï¼Ÿè¸¢é¦†ï¼~
 			{
 				pre[root1] = root2;
-				total--; //ÃÅÅÉÉÙÒ»¸ö£¬µĞÈË£¨Òª½¨µÄÂ·£©¾ÍÉÙÒ»¸ö
+				total--; //é—¨æ´¾å°‘ä¸€ä¸ªï¼Œæ•Œäººï¼ˆè¦å»ºçš„è·¯ï¼‰å°±å°‘ä¸€ä¸ª
 			}
 		}
-		printf("%d\n", total);//ÌìÏÂ¾ÖÊÆ£º»¹Ê£¼¸¸öÃÅÅÉ
+		printf("%d\n", total);//å¤©ä¸‹å±€åŠ¿ï¼šè¿˜å‰©å‡ ä¸ªé—¨æ´¾
 	}
 	return 0;
+}
+//2
+int path[100];
+int rank[100];
+// åˆå§‹åŒ– n ä¸ªå…ƒç´ 
+void init(int n)
+{
+    for (int i=0; i<n; i++)
+    {
+        path[i] = i;
+        rank[i] = 0;
+    }
+}
+
+// æŸ¥è¯¢æ ‘çš„æ ¹
+int find(int x)
+{
+    int r=x;
+    while(r!=path[r])
+        r=path[r];
+    int i=r,j=-1;
+
+    while(i!=j)
+    {
+        j=path[i];  // åœ¨æ”¹å˜ä¸Šçº§ä¹‹å‰ï¼Œç”¨ä¸´æ—¶å˜é‡ j è®°å½•ä¸‹ä»–çš„å€¼
+        path[i]=r;  // æŠŠä¸Šçº§èŠ‚ç‚¹æ”¹ä¸ºæ ¹èŠ‚ç‚¹
+        i=j;
+    }
+    return r;
+}
+
+// åˆå¹¶ x å’Œ y æ‰€å±çš„åˆé›†
+void merge(int x, int y)
+{
+    fx = find(x);
+    fy = find(y);
+    if (fx == fy) return;
+    if (rank[fx] < rank[fy])
+        path[fx] = fy;
+    else
+    {
+        path[fy] = fx;
+        if (rank[fx] == rank[fy]) rank[fx] ++;
+    }
 }
