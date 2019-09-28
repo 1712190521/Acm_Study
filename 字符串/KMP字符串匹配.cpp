@@ -1,53 +1,57 @@
-//ÓÅ»¯¹ıºóµÄnext Êı×éÇó·¨
-void GetNextval(char* p, int next[])
+#include <iostream>
+#include <cstring>
+#include <cstdio>
+using namespace std;
+
+const int maxlen=100;
+char str[maxlen],ptr[maxlen];//çˆ¶ä¸²strå’Œå­ä¸²ptr
+int nextt[maxlen];
+
+void getnext()//è·å–nextæ•°ç»„
 {
-	int pLen = strlen(p);
-	next[0] = -1;
-	int k = -1;
-	int j = 0;
-	while (j < pLen - 1)
-	{
-		//p[k]±íÊ¾Ç°×º£¬p[j]±íÊ¾ºó×º  
-		if (k == -1 || p[j] == p[k])
-		{
-			++j;
-			++k;
-			//½ÏÖ®Ç°nextÊı×éÇó·¨£¬¸Ä¶¯ÔÚÏÂÃæ4ĞĞ
-			if (p[j] != p[k])
-				next[j] = k;   //Ö®Ç°Ö»ÓĞÕâÒ»ĞĞ
-			else
-				//ÒòÎª²»ÄÜ³öÏÖp[j] = p[ next[j ]]£¬ËùÒÔµ±³öÏÖÊ±ĞèÒª¼ÌĞøµİ¹é£¬k = next[k] = next[next[k]]
-				next[j] = next[k];
+	int i,n,k;
+	n=strlen(ptr);
+	i = 0;
+	k = nextt[i] = -1;
+	while(i<n) {
+		if(k==-1 || ptr[k]==ptr[i]) {
+			i++;k++;
+			nextt[i] = k;
+		} else {
+			k = nextt[k];
 		}
-		else
-		{
-			k = next[k];
-		}
+		//nexttè¡¨ç¤ºçš„æ˜¯â€œ0ï½i-1â€ä¸­ï¼Œâ€œæœ€é•¿å‰åç¼€â€é•¿åº¦
 	}
 }
-int KmpSearch(char* s, char* p)
+
+int kmp(char *a,char *b)//åŒ¹é…abä¸¤ä¸²ï¼Œaä¸ºçˆ¶ä¸²
 {
-	int i = 0;
-	int j = 0;
-	int sLen = strlen(s);
-	int pLen = strlen(p);
-	while (i < sLen && j < pLen)
-	{
-		//¢ÙÈç¹ûj = -1£¬»òÕßµ±Ç°×Ö·ûÆ¥Åä³É¹¦£¨¼´S[i] == P[j]£©£¬¶¼Áîi++£¬j++    
-		if (j == -1 || s[i] == p[j])
-		{
-			i++;
-			j++;
-		}
-		else
-		{
-			//¢ÚÈç¹ûj != -1£¬ÇÒµ±Ç°×Ö·ûÆ¥ÅäÊ§°Ü£¨¼´S[i] != P[j]£©£¬ÔòÁî i ²»±ä£¬j = next[j]    
-			//next[j]¼´ÎªjËù¶ÔÓ¦µÄnextÖµ      
-			j = next[j];
+	int i=0,j=0;
+	int len1=strlen(a);
+	int len2=strlen(b);
+	getnext();
+	while(i<len1&&j<len2) {
+		if(j==-1 || a[i]==b[j]) {
+			i++;j++;
+		} else {
+			j=nextt[j];//åˆ°å‰ä¸€ä¸ªåŒ¹é…ç‚¹
 		}
 	}
-	if (j == pLen)
-		return i - j;
-	else
+	if(j>=len2) {
+		return i-j;
+	} else {
 		return -1;
+	}
+}
+
+int main(){
+	while( scanf( "%s%s", str, ptr)) {
+		int ans = kmp(str,ptr);
+		if(ans>=0) {
+			printf( "%d\n", kmp( str,ptr ));
+		} else {
+			printf("Not find\n");
+		}
+	}
+	return 0;
 }
